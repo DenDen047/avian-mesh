@@ -1,6 +1,6 @@
 # avian-mesh
 Code repository for the paper: \
-**3D Bird Reconstruction: a Dataset, Model, and Shape Recovery from a Single View**  
+**3D Bird Reconstruction: a Dataset, Model, and Shape Recovery from a Single View**
 [Marc Badger](https://www.ocf.berkeley.edu/~badger/), [Yufu Wang](https://yufu-wang.github.io), [Adarsh Modh](https://www.seas.upenn.edu/~adarshm/), [Ammon Perkes](https://aperkes.github.io), [Nikos Kolotouros](https://www.seas.upenn.edu/~nkolot/), [Bernd Pfrommer](http://pfrommer.us), [Marc Schmidt](https://web.sas.upenn.edu/marcschmidtlab/pages/people/), [Kostas Daniilidis](https://www.cis.upenn.edu/~kostas/) \
 ECCV 2020 \
 [[Project Page](https://marcbadger.github.io/avian-mesh/)]
@@ -8,26 +8,36 @@ ECCV 2020 \
 ![front](front.png)
 
 ## Installation instructions
-```
-virtualenv avian3d -p python3
+```bash
+python3.9 -m venv avian3d
 source avian3d/bin/activate
-pip install -U pip
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-In addition, you will need to install [pytorch3D](https://github.com/facebookresearch/pytorch3d). Please follow the installation instructions, and we recommend installing with CUDA support if you want to utilize silhouettes in single view reconstruction. If you need offscreen rendering (e.g. over SSH), please look at these [instructions](https://pyrender.readthedocs.io/en/latest/install/index.html) for installing pyrender with OSMesa. 
+In addition, you will need to install [pytorch3D](https://github.com/facebookresearch/pytorch3d). Please follow the installation instructions, and we recommend installing with CUDA support if you want to utilize silhouettes in single view reconstruction. If you need offscreen rendering (e.g. over SSH), please look at these [instructions](https://pyrender.readthedocs.io/en/latest/install/index.html) for installing pyrender with OSMesa.
+
+### Installation steps for macOS
+
+```bash
+conda create -n avian3d python=3.9
+conda activate avian3d
+conda install pytorch=1.13.0 torchvision
+MACOSX_DEPLOYMENT_TARGET=10.14 CC=clang CXX=clang++ pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"
+pip install -r requirements.txt
+```
 
 ## Fetch data
-Download the [cowbird dataset](https://drive.google.com/file/d/1vyXYIJIo9jneIqC7lowB4GVi17rjztjn/view?usp=sharing) and place it under `/data`. To run our pipeline, you will also need to download the pretrained [keypoint detector](https://drive.google.com/file/d/17hhoGypVQWOwhSEacHO_GVwAmL6UB3PS/view?usp=sharing) and place it in `/keypoint_detection`. If you want to try our MaskRCNN-based detector, download the finetuned [weights](https://drive.google.com/file/d/1YrDNJNEdbMgHjmiA2go6yOB3hEiXxw8V/view?usp=sharing) into `/models`; this step is not required for reconstruction. 
+Download the [cowbird dataset](https://drive.google.com/file/d/1vyXYIJIo9jneIqC7lowB4GVi17rjztjn/view?usp=sharing) and place it under `/data`. To run our pipeline, you will also need to download the pretrained [keypoint detector](https://drive.google.com/file/d/17hhoGypVQWOwhSEacHO_GVwAmL6UB3PS/view?usp=sharing) and place it in `/keypoint_detection`. If you want to try our MaskRCNN-based detector, download the finetuned [weights](https://drive.google.com/file/d/1YrDNJNEdbMgHjmiA2go6yOB3hEiXxw8V/view?usp=sharing) into `/models`; this step is not required for reconstruction.
 
 ## Dataset format
-Within cowbird, most labels are kept in [COCO](https://cocodataset.org/#format-data) format. Each image has a unique image id, which is also the name of that image. All annotations are stored in `/cowbird/annotations/instance.json`, including over 6355 segmented instances, a subset of which (about 1000) will also have keypoints. You will also find information regarding the exact ROS time and the camera from which it is captured. Beyond `instance.json`, we split the group of instances that have keypoint annotaitons into `instance_train.json` and `instance_test.json` for single view reconstruciton task. In the `instance_splits` folder, you will also find datasets split by different criteria (e.g. by season); these splits and labels can be used for instance level detection and tracking tasks. You can take a look at `datasets/cowbird_dataset.py` as a quick guide in how to read the labels. 
+Within cowbird, most labels are kept in [COCO](https://cocodataset.org/#format-data) format. Each image has a unique image id, which is also the name of that image. All annotations are stored in `/cowbird/annotations/instance.json`, including over 6355 segmented instances, a subset of which (about 1000) will also have keypoints. You will also find information regarding the exact ROS time and the camera from which it is captured. Beyond `instance.json`, we split the group of instances that have keypoint annotaitons into `instance_train.json` and `instance_test.json` for single view reconstruciton task. In the `instance_splits` folder, you will also find datasets split by different criteria (e.g. by season); these splits and labels can be used for instance level detection and tracking tasks. You can take a look at `datasets/cowbird_dataset.py` as a quick guide in how to read the labels.
 
-The only labels not in COCO format are in `/cowbird/annotations/multiview_instance.pth`, which contains instances that have multiview matching. These are used to recover a pose prior. We provide a dataset class `datasets/multiview_dataset.py` as a starting point to take advantage of these multiview data. 
+The only labels not in COCO format are in `/cowbird/annotations/multiview_instance.pth`, which contains instances that have multiview matching. These are used to recover a pose prior. We provide a dataset class `datasets/multiview_dataset.py` as a starting point to take advantage of these multiview data.
 
 
 ## Run demo code
-We provide demo codes for singleview reconstruction, multiview reconstruction, and a pretrained detector based on Mask R-CNN. The demo codes use the provided dataset classes describe above to load the cowbird dataset. 
+We provide demo codes for singleview reconstruction, multiview reconstruction, and a pretrained detector based on Mask R-CNN. The demo codes use the provided dataset classes describe above to load the cowbird dataset.
 
 Demo for single view reconstruction with only keypoints
 ```
