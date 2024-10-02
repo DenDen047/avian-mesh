@@ -35,11 +35,11 @@ if __name__ == '__main__':
         if device == 'cpu':
             print('Warning: using mask during optimization without GPU acceleration is very slow!')
         silhouette_renderer = base_renderer(size=256, focal=2167, device=device)
-        optimizer = OptimizeSV(num_iters=100, prior_weight=1, mask_weight=1, 
+        optimizer = OptimizeSV(num_iters=100, prior_weight=1, mask_weight=1,
                                use_mask=True, renderer=silhouette_renderer, device=device)
         print('Using mask for optimization')
     else:
-        optimizer = OptimizeSV(num_iters=100, prior_weight=1, mask_weight=1, 
+        optimizer = OptimizeSV(num_iters=100, prior_weight=1, mask_weight=1,
                                use_mask=False, device=device)
 
     # Load dataset
@@ -73,8 +73,8 @@ if __name__ == '__main__':
     ignored = pred_kpts[:, :, 2] < 0.3
     opt_kpts = pred_kpts.clone()
     opt_kpts[ignored] = 0
-    pose_op, bone_op, tran_op, model_mesh = optimizer(pose, bone, tran, 
-                                          focal_length=2167, camera_center=128, 
+    pose_op, bone_op, tran_op, model_mesh = optimizer(pose, bone, tran,
+                                          focal_length=2167, camera_center=128,
                                           keypoints=opt_kpts, masks=mask_in.squeeze(1))
 
 
@@ -91,7 +91,7 @@ if __name__ == '__main__':
         img_save[:, 256*0:256*(0+1), :] = img_out
         img_save[:, 256*1:256*(1+1), :] = img_opt
 
-        plt.imsave(args.outdir+'/{:02d}.png'.format(i), img_save) 
+        plt.imsave(args.outdir+'/{:02d}.png'.format(i), img_save)
 
 
 

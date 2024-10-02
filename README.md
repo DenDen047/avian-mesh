@@ -20,10 +20,10 @@ In addition, you will need to install [pytorch3D](https://github.com/facebookres
 ### Installation steps for macOS
 
 ```bash
-conda create -n avian3d python=3.9
+conda create -n avian3d python=3.6
 conda activate avian3d
-conda install pytorch=1.13.0 torchvision
-MACOSX_DEPLOYMENT_TARGET=10.14 CC=clang CXX=clang++ pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"
+pip install torch==1.7.0 torchvision==0.8.0
+MACOSX_DEPLOYMENT_TARGET=10.14 CC=clang CXX=clang++ pip install "git+https://github.com/facebookresearch/pytorch3d.git@v0.3.0"
 pip install -r requirements.txt
 ```
 
@@ -40,16 +40,16 @@ The only labels not in COCO format are in `/cowbird/annotations/multiview_instan
 We provide demo codes for singleview reconstruction, multiview reconstruction, and a pretrained detector based on Mask R-CNN. The demo codes use the provided dataset classes describe above to load the cowbird dataset.
 
 Demo for single view reconstruction with only keypoints
-```
+```bash
 python tools/singleview_demo.py
 ```
 or reconstruction with keypoints and silhouette
-```
+```bash
 python tools/singleview_demo.py --use_mask
 ```
 
 Demo for instance level detection
-```
+```bash
 python tools/detector_demo.py
 ```
 
